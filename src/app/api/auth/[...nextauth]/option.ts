@@ -40,9 +40,11 @@ export const authOptions: NextAuthOptions= {
 
                 if(!isPasswordCorrect){
                     throw new Error("Incorrect Password")
+                }else{
+                    return user;
                 }
 
-                return user;
+                
             },
         }),
     ],
@@ -75,9 +77,9 @@ export const authOptions: NextAuthOptions= {
     session : {
         strategy : 'jwt'
     },
-    secret: process.env.NEXTAUTH_SECRET,
+    secret: "@ndup@ndu",
     pages: {
-        signIn: '/sign-in'
+        signIn: '/sign-up'
     }
     
 }
