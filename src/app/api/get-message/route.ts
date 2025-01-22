@@ -36,6 +36,8 @@ export async function GET(request: Request){
             {$group: {_id: userId, message: { $push: '$messages'} }  }
         ]).exec();
 
+        //it returns an array;
+
         if(!user){
             return Response.json({
                 success: false,
