@@ -1,11 +1,13 @@
 import dbConnect from "@/lib/dbConnect";
 import userModel from "@/model/User";
 
-export async function GET(request: Request){
+export async function POST(request: Request){
     await dbConnect();
 
     try {
-        const {username, verifyCode} =  await request.json()
+        const {username, code} =  await request.json()
+        // console.log("username", username, verifyCode);
+        
 
         const decodedUsername = decodeURIComponent(username);
         // it remove unncesseary detail when we take from url like trim, remove %
@@ -21,7 +23,7 @@ export async function GET(request: Request){
             }, {status: 404})
         }
 
-        const codeVerification= user.verifyCode === verifyCode
+        const codeVerification= user.verifyCode === code
 
         const isNotExpired= new Date(user.verifyCodeExpiry) > new Date()
 
