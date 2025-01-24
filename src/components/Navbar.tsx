@@ -8,8 +8,10 @@ import { Button } from "./ui/button"
 const Navbar = () => {
 
     const {data: session}= useSession()
+    console.log("Nav data session ", session);
+    
 
-    const user= session?.user
+    const user: User= session?.user as User
 
   return (
     <nav className="p-3 md:p-6 shadow-md bg-gray-900 text-white">
