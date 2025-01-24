@@ -79,7 +79,7 @@ export const authOptions: NextAuthOptions= {
     },
     secret: "@ndup@ndu",
     pages: {
-        signIn: '/sign-up'
+        signIn: '/sign-in'
     }
     
 }

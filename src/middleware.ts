@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
+import { log } from 'console';
 export { default } from 'next-auth/middleware';
 
 export const config = {
@@ -8,6 +9,8 @@ export const config = {
 
 export async function middleware(request: NextRequest) {
   const token = await getToken({ req: request, secret: "@ndup@ndu" });
+  console.log("token", token);
+  
   const url = request.nextUrl;
 
   // Redirect to dashboard if the user is already authenticated
