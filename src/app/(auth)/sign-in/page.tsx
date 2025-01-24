@@ -28,34 +28,27 @@ export default function SignInForm() {
       password: '',
     },
   });
-
+""
   const { toast } = useToast();
   const onSubmit = async (data: z.infer<typeof signInSchema>) => {
-    const result = await signIn('credentials', {
-      redirect: false,
-      identifier: data.identifier,
-      password: data.password,
-    });
+      const result= await signIn("credentails", {
+        redirect: false,
+        identifier: data.identifier,
+        password: data.password
+      })   
 
-    if (result?.error) {
-      if (result.error === 'CredentialsSignin') {
+      if(result?.error){
         toast({
-          title: 'Login Failed',
-          description: 'Incorrect username or password',
-          variant: 'destructive',
-        });
-      } else {
-        toast({
-          title: 'Error',
-          description: result.error,
-          variant: 'destructive',
-        });
+          title: "Login Failed",
+          description: "Incorrect username or password",
+          variant: "destructive"
+        })
+      } 
+
+      if(result?.url){
+        router.replace('/')
       }
-    }
 
-    if (result?.url) {
-      router.replace('/dashboard');
-    }
   };
 
   return (
