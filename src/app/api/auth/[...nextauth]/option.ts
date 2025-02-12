@@ -21,27 +21,31 @@ export const authOptions: NextAuthOptions= {
 
             async authorize(credentials: any): Promise<any> {
                 await dbConnect();
-                const user = await userModel.findOne({
-                    $or: [
-                        {email: credentials.indentifier},
-                        {username: credentials.identifier}
-                    ]
-                 })
-
-                if(!user){
-                    throw new Error("User not found with this Email")
-                }
-
-                if(!user.isVerified){
-                    throw new Error("Please verify your Account")
-                }
-
-                const isPasswordCorrect= await bcrypt.compare(credentials.password, user.password)
-
-                if(!isPasswordCorrect){
-                    throw new Error("Incorrect Password")
-                }else{
-                    return user;
+                try {
+                    const user = await userModel.findOne({
+                        $or: [
+                            {email: credentials.indentifier},
+                            {username: credentials.identifier}
+                        ]
+                     })
+    
+                    if(!user){
+                        throw new Error("User not found with this Email")
+                    }
+    
+                    if(!user.isVerified){
+                        throw new Error("Please verify your Account")
+                    }
+    
+                    const isPasswordCorrect= await bcrypt.compare(credentials.password, user.password)
+    
+                    if(!isPasswordCorrect){
+                        throw new Error("Incorrect Password")
+                    }else{
+                        return user;
+                    }
+                } catch (error: any) {
+                    throw new Error(error);
                 }
 
                 
