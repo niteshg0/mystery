@@ -15,6 +15,7 @@ import { acceptMessageSchema } from "@/schemas/acceptMessageSchema";
 import { User } from 'next-auth';
 import axios, { AxiosError } from 'axios';
 import { ApiResponse } from '@/types/ApiResponse';
+import SkeletonCard from '@/components/SkeletonCard';
 
 
 
@@ -209,16 +210,25 @@ const page = () => {
         )}
       </Button>
       <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
-        {messages.length > 0 ? (
-          messages.map((message, index) => (
-            <MessageCard
-              key={(message as any)?._id}
-              message={message}
-              onMessageDelete={handleDeleteMessage}
-            />
-          ))
+        {( isLoading || isSwitchLoading) ? (
+          <>
+          <SkeletonCard></SkeletonCard>
+          <SkeletonCard></SkeletonCard>
+          <SkeletonCard></SkeletonCard>
+          <SkeletonCard></SkeletonCard>
+          </>
         ) : (
-          <p>No messages to display.</p>
+          messages.length > 0 ? (
+            messages.map((message, index) => (
+              <MessageCard
+                key={(message as any)?._id}
+                message={message}
+                onMessageDelete={handleDeleteMessage}
+              />
+            ))
+          ) : (
+            <p>No messages to display.</p>
+          )
         )}
       </div>
     </div>

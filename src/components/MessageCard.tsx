@@ -54,7 +54,7 @@ export function MessageCard({message, onMessageDelete}: MessageCardtype){
 
     return(
         
-        <Card className="card-bordered">
+        <Card className="card-bordered border-2 p-1">
         <CardHeader>
           <div className="flex justify-between items-center">
             <CardTitle>{message.content}</CardTitle>
