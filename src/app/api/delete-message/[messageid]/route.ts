@@ -3,51 +3,60 @@ import { authOptions } from "../../auth/[...nextauth]/option";
 import { getServerSession, User } from "next-auth";
 import userModel from "@/model/User";
 
-export async function DELETE(request: Request, {params}: {params: Promise<{messageid: string}>}){
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ messageid: string }> }
+) {
+  const resolvedParams = await params;
+  const messageId = resolvedParams.messageid;
 
-    const resolvedParams = await params;
-    const messageId= resolvedParams.messageid
+  await dbConnect();
 
-    await dbConnect();
+  const session = await getServerSession(authOptions);
 
-    const session= await getServerSession(authOptions);
+  // const userId= new mongoose.Types.ObjectId(session?.user._id)
 
-    // const userId= new mongoose.Types.ObjectId(session?.user._id)
+  const _user: User = session?.user as User;
 
-    const _user: User = session?.user as User;
+  if (!session || !session?.user) {
+    return Response.json(
+      {
+        success: false,
+        message: "Not Authenticated",
+      },
+      { status: 401 }
+    );
+  }
 
-    if(!session || !session?.user){
-        return Response.json({
-            success: false,
-            message: "Not Authenticated"
-        }, {status: 401}) 
+  try {
+    const response = await userModel.updateOne(
+      { _id: _user._id },
+      { $pull: { messages: { _id: messageId } } }
+    );
+
+    if (response.modifiedCount === 0) {
+      return Response.json(
+        {
+          success: false,
+          message: "Message not found",
+        },
+        { status: 401 }
+      );
     }
 
-    try {
-        const response= await userModel.updateOne(
-            {_id: _user._id},
-            {$pull: {messages: {_id : messageId}}}
-        )
+    return Response.json(
+      {
+        success: true,
+        message: "Message Deleted",
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("An unexpected error occurred:", error);
 
-        if(response.modifiedCount===0){
-            return Response.json({
-                success: false,
-                message: "Message not found"
-            }, {status: 401}) 
-        }
-
-        return Response.json({
-            success: true,
-            message: "Message Deleted"
-        }, {status: 200})
-
-    } catch (error) {
-        console.error('An unexpected error occurred:', error);
-        
-        return Response.json(
-            { message: 'error deleting message', success: false },
-            { status: 500 }
-        );
-    }
-
+    return Response.json(
+      { message: "error deleting message", success: false },
+      { status: 500 }
+    );
+  }
 }
