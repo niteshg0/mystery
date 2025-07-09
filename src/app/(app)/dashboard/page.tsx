@@ -12,14 +12,13 @@ import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { acceptMessageSchema } from "@/schemas/acceptMessageSchema";
-import { User } from 'next-auth';
 import axios, { AxiosError } from 'axios';
 import { ApiResponse } from '@/types/ApiResponse';
 import SkeletonCard from '@/components/SkeletonCard';
 
 
 
-const page = () => {
+const DashboardPage = () => {
   const [messages, setMessages]= useState<message []>([]);
   const [isLoading, setIsLoading]= useState(false);
   const [isSwitchLoading, setIsSwitchLoading]= useState(false);
@@ -149,7 +148,12 @@ const page = () => {
 
   // const baseUrl= `${window.location.origin}`;
   // const profileUrl= `${baseUrl}/u/${session?.user.username}`
-  const profileUrl = useMemo(() => `${window.location.origin}/u/${session?.user.username}`, [session]);
+  const profileUrl = useMemo(() => {
+    if (typeof window !== 'undefined') {
+      return `${window.location.origin}/u/${session?.user.username}`;
+    }
+    return '';
+  }, [session]);
 
 
   const copyToClipboard= async ()=>{
@@ -219,9 +223,9 @@ const page = () => {
           </>
         ) : (
           messages.length > 0 ? (
-            messages.map((message, index) => (
+            messages.map((message) => (
               <MessageCard
-                key={(message as any)?._id}
+                key={message._id?.toString()}
                 message={message}
                 onMessageDelete={handleDeleteMessage}
               />
@@ -234,4 +238,4 @@ const page = () => {
     </div>
   )
 }
-export default page
+export default DashboardPage

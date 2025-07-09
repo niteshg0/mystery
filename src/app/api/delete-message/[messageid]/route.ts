@@ -1,13 +1,12 @@
 import dbConnect from "@/lib/dbConnect";
 import { authOptions } from "../../auth/[...nextauth]/option";
 import { getServerSession, User } from "next-auth";
-import { setEngine } from "crypto";
 import userModel from "@/model/User";
-import mongoose from "mongoose";
 
-export async function DELETE(request: Request, {params}: {params: {messageid: string}}){
+export async function DELETE(request: Request, {params}: {params: Promise<{messageid: string}>}){
 
-    const messageId= params.messageid
+    const resolvedParams = await params;
+    const messageId= resolvedParams.messageid
 
     await dbConnect();
 

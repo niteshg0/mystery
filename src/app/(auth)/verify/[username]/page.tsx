@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -20,7 +19,6 @@ import {
 import { Input } from "@/components/ui/input"
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { title } from "process";
 import { ApiResponse } from "@/types/ApiResponse";
 
 export default function VerifyPage() {
@@ -59,7 +57,7 @@ export default function VerifyPage() {
             console.log("Error on Verify-Page", error);
 
             const axiosError= error as AxiosError<ApiResponse>
-            let errorMessage= axiosError.response?.data.message
+            const errorMessage= axiosError.response?.data.message
 
             toast({
                 title: "Could not Verify",

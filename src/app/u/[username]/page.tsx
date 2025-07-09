@@ -1,6 +1,6 @@
-const page = () => {
+const UserProfilePage = () => {
     return (
       <div> MEssage</div>
     )
   }
-  export default page
+  export default UserProfilePage

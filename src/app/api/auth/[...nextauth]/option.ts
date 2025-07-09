@@ -1,11 +1,8 @@
 import {NextAuthOptions} from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials";
-import GithubProvider from "next-auth/providers/github"
 import bcrypt from "bcryptjs"
-import { JWT } from "next-auth/jwt"
 import dbConnect from "@/lib/dbConnect";
 import userModel from "@/model/User";
-import {user} from "@/model/User";
 
 
 export const authOptions: NextAuthOptions= {
@@ -19,12 +16,17 @@ export const authOptions: NextAuthOptions= {
                 password: { label: "Password", type: "password" }
             },
 
-            async authorize(credentials: any): Promise<any> {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            async authorize(credentials: Record<string, string> | undefined): Promise<any> {
+                if (!credentials) {
+                    throw new Error("No credentials provided");
+                }
+                
                 await dbConnect();
                 try {
                     const user = await userModel.findOne({
                         $or: [
-                            {email: credentials.indentifier},
+                            {email: credentials.identifier},
                             {username: credentials.identifier}
                         ]
                      })
@@ -44,8 +46,8 @@ export const authOptions: NextAuthOptions= {
                     }else{
                         return user;
                     }
-                } catch (error: any) {
-                    throw new Error(error);
+                } catch (error: unknown) {
+                    throw new Error(error instanceof Error ? error.message : "An error occurred");
                 }
 
                 
